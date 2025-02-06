@@ -263,6 +263,35 @@
                 100% { transform: skewY(-3deg) translate(20px, 20px); }
             }
         }
+
+        button:disabled {
+            opacity: 0.7;
+            cursor: default;
+            transform: none;
+        }
+
+        .loading {
+            display: inline-block;
+            position: relative;
+        }
+
+        .loading::after {
+            content: '...';
+            position: absolute;
+            animation: loading 1.5s infinite;
+            width: 1em;
+            text-align: left;
+        }
+
+        .success {
+            color: var(--gradient-end);
+        }
+
+        @keyframes loading {
+            0% { content: '.'; }
+            33% { content: '..'; }
+            66% { content: '...'; }
+        }
     </style>
 </head>
 <body>
@@ -289,10 +318,38 @@
         </div>
         <h1>Coming Soon</h1>
         <p>We're building a better way to handle your immigration process. Sign up to be notified when we launch and get early access.</p>
-        <form class="email-form" action="https://formspree.io/f/your-form-id" method="POST">
+        <form class="email-form" action="https://formspree.io/f/your-form-id" method="POST" onsubmit="handleSubmit(event)">
             <input type="email" name="email" placeholder="Enter your email" required>
-            <button type="submit">Notify Me</button>
+            <button type="submit" id="submitBtn">Notify Me</button>
         </form>
     </div>
+
+    <script>
+    function handleSubmit(event) {
+        event.preventDefault();
+        const button = document.getElementById('submitBtn');
+        const input = document.querySelector('input[type="email"]');
+        
+        // Disable form elements
+        button.disabled = true;
+        input.disabled = true;
+        
+        // Show loading state
+        button.innerHTML = '<span class="loading">Subscribing...</span>';
+        
+        // Simulate API call
+        setTimeout(() => {
+            button.innerHTML = '<span class="success">✓ Subscribed!</span>';
+            input.value = '';
+            
+            // Reset form after 2 seconds
+            setTimeout(() => {
+                button.disabled = false;
+                input.disabled = false;
+                button.innerHTML = 'Notify Me';
+            }, 2000);
+        }, 1500);
+    }
+    </script>
 </body>
 </html>
